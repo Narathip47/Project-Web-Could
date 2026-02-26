@@ -110,7 +110,7 @@
                         <td style="color: #4f46e5; font-weight: bold;">${b.subject}</td>
                         <td>${b.message}</td>
                         <td>${b.username} <br><span style="font-size: 12px; color: #666;">(${b.email})</span></td>
-                        <td><span class="status-booked">${b.status}</span></td>
+                        <td><span class="status-booked">${b.status || 'จองแล้ว'}</span></td>
                         <td>${actionHtml}</td>
                     `;
                     tbody.appendChild(tr);
@@ -138,7 +138,7 @@
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ 
-                                bookingId: bookingId, 
+                                id: bookingId, 
                                 student_id: currentUser.student_id // ส่งรหัสนศ. ไปยืนยันด้วย
                             })
                         });

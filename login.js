@@ -67,11 +67,11 @@ app.post('/api/book-room', (req, res) => {
 
         const insertSql = `
             INSERT INTO queue_contact
-            (username, email, subject, message, date)
-            VALUES (?, ?, ?, ?, ?)
+            (username, email, subject, message, date, status)
+            VALUES (?, ?, ?, ?, ?, ?)
         `;
 
-        db.query(insertSql, [name, student_id, room, timeSlot, date], (err2) => {
+        db.query(insertSql, [name, student_id, room, timeSlot, date, "จองแล้ว"], (err2) => {
             if (err2) {
                 console.log(err2);
                 return res.json({ success: false, message: "บันทึกไม่ได้"  });
@@ -90,7 +90,7 @@ app.post('/api/book-room', (req, res) => {
 // GET BOOKINGS
 // ==========================================
 app.get('/api/getBookings', (req, res) => {
-    const sql = "SELECT * FROM queue_contact ORDER BY date ASC";
+    const sql = "SELECT *, COALESCE(status, 'จองแล้ว') AS status FROM queue_contact ORDER BY date ASC";
 
     db.query(sql, (err, result) => {
         if (err) return res.json({ success: false });
@@ -103,13 +103,25 @@ app.get('/api/getBookings', (req, res) => {
 // CANCEL BOOKING
 // ==========================================
 app.post('/api/cancel-booking', (req, res) => {
-    const { id } = req.body;
+    const { id, student_id } = req.body;
 
-    const sql = "DELETE FROM queue_contact WHERE id = ?";
+    if (!id || !student_id) {
+        return res.json({ success: false, message: "ข้อมูลไม่ครบ" });
+    }
 
-    db.query(sql, [id], (err) => {
-        if (err) return res.json({ success: false });
-        res.json({ success: true });
+    // ตรวจสอบว่านี่คือของเจ้าของจริง
+    const checkSql = "SELECT * FROM queue_contact WHERE id = ? AND email = ?";
+    
+    db.query(checkSql, [id, student_id], (err, result) => {
+        if (err || result.length === 0) {
+            return res.json({ success: false, message: "ไม่พบคิวนี้หรือคุณไม่มีสิทธิ์ลบ" });
+        }
+
+        const sql = "DELETE FROM queue_contact WHERE id = ?";
+        db.query(sql, [id], (err) => {
+            if (err) return res.json({ success: false, message: "ลบไม่ได้" });
+            res.json({ success: true });
+        });
     });
 });
 

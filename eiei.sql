@@ -10,6 +10,10 @@ CREATE TABLE IF NOT EXISTS `queue_admin`(
     PRIMARY KEY (`id`)
 );
 
+INSERT INTO queue_admin (username, email, password)
+VALUES ('admin', 'admin@gmail.com', '1234');
+
+DROP TABLE IF EXISTS queue_students;
 CREATE TABLE IF NOT EXISTS `queue_students`(
     `id` int(11) not null auto_increment,
     `student_id` VARCHAR(20) not null,

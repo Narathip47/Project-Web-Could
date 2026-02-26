@@ -38,7 +38,7 @@
         <h2 style="color: #4f46e5; margin-bottom: 20px;">จองห้องสมุด</h2>
         
         <input type="text" id="b_name" placeholder="ชื่อ-นามสกุล">
-        <input type="text" id="b_studentId" placeholder="รหัสนักศึกษา / เบอร์โทรศัพท์">
+        <input type="text" id="b_student_id" placeholder="รหัสนักศึกษา / เบอร์โทรศัพท์">
         
         <select id="b_room">
             <option value="">-- เลือกห้อง --</option>
@@ -73,11 +73,11 @@
         } else {
             // ถ้าล็อกอินแล้ว เอาชื่อและรหัสนักศึกษามาใส่ในช่องให้เลย
             document.getElementById('b_name').value = loggedInUser.name;
-            document.getElementById('b_studentId').value = loggedInUser.studentId;
+            document.getElementById('b_student_id').value = loggedInUser.studentId;
             
             // ล็อกช่องไว้ ไม่ให้คนพิมพ์แก้ชื่อตัวเอง
             document.getElementById('b_name').disabled = true;
-            document.getElementById('b_studentId').disabled = true;
+            document.getElementById('b_student_id').disabled = true;
         }
 
         // ตั้งค่าให้เลือกวันที่ย้อนหลังไม่ได้
@@ -86,7 +86,7 @@
         // 2. โลจิกการกดปุ่มยืนยันจองเหมือนเดิม
         document.getElementById('submitBooking').addEventListener('click', async () => {
             const name = document.getElementById('b_name').value;
-            const studentId = document.getElementById('b_studentId').value;
+            const student_id = document.getElementById('b_student_id').value;
             const room = document.getElementById('b_room').value;
             const date = document.getElementById('b_date').value;
             const timeSlot = document.getElementById('b_timeSlot').value;
@@ -96,7 +96,7 @@
                 return;
             }
 
-            const payload = { name, studentId, room, date, timeSlot };
+            const payload = { name, student_id, room, date, timeSlot };
 
             try {
                 const res = await fetch('/api/book-room', {

@@ -10,7 +10,7 @@
 
     <div class="login-container">
         <h2 style="color: #4f46e5; margin-bottom: 20px;">เข้าสู่ระบบนักศึกษา</h2>
-        <input type="text" id="log_studentId" placeholder="รหัสนักศึกษา">
+        <input type="text" id="log_student_id" placeholder="รหัสนักศึกษา">
         <input type="password" id="log_password" placeholder="รหัสผ่าน">
         
         <button class="admin-loginBtn" id="btnLogin">เข้าสู่ระบบ</button>
@@ -22,13 +22,13 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         document.getElementById('btnLogin').addEventListener('click', async () => {
-            const studentId = document.getElementById('log_studentId').value;
+            const student_id = document.getElementById('log_student_id').value;
             const password = document.getElementById('log_password').value;
 
             const res = await fetch('/api/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ studentId, password })
+                body: JSON.stringify({ student_id, password })
             });
             const data = await res.json();
 

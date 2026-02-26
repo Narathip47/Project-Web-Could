@@ -10,7 +10,7 @@
 
     <div class="login-container">
         <h2 style="color: #4f46e5; margin-bottom: 20px;">สมัครสมาชิก</h2>
-        <input type="text" id="reg_studentId" placeholder="รหัสนักศึกษา">
+        <input type="text" id="reg_student_id" placeholder="รหัสนักศึกษา">
         <input type="text" id="reg_name" placeholder="ชื่อ - นามสกุล">
         <input type="password" id="reg_password" placeholder="รหัสผ่าน">
         
@@ -28,11 +28,11 @@
         document.getElementById('btnRegister').addEventListener('click', async () => {
             console.log("👉 ปุ่มสมัครถูกกดแล้ว!"); // เช็คว่าปุ่มเชื่อมต่อสำเร็จ
             
-            const studentId = document.getElementById('reg_studentId').value.trim();
+            const student_id = document.getElementById('reg_student_id').value.trim();
             const name = document.getElementById('reg_name').value.trim();
             const password = document.getElementById('reg_password').value.trim();
 
-            if(!studentId || !name || !password) {
+            if(!student_id || !name || !password) {
                 Swal.fire({ icon: 'warning', title: 'กรุณากรอกข้อมูลให้ครบถ้วน' });
                 return;
             }
@@ -41,7 +41,7 @@
                 const res = await fetch('/api/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ studentId, name, password })
+                    body: JSON.stringify({ student_id, name, password })
                 });
                 const data = await res.json();
 

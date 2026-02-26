@@ -42,7 +42,11 @@ app.post('/checkLoginAdminData', (req, res) => {
 // 2. BOOK ROOM
 // ==========================================
 app.post('/api/book-room', (req, res) => {
-    const { name, studentId, room, date, timeSlot } = req.body;
+    const { name, student_id, room, date, timeSlot } = req.body;
+
+    if (!name || !student_id || !room || !date || !timeSlot) {
+        return res.json({ success: false, message: "ข้อมูลไม่ครบ" });
+    }
 
     const checkSql = `
         SELECT * FROM queue_contact
@@ -50,7 +54,9 @@ app.post('/api/book-room', (req, res) => {
     `;
 
     db.query(checkSql, [room, date, timeSlot], (err, result) => {
-        if (err) return res.json({ success: false });
+        if (err) {console.log(err);
+            return res.json({ success: false });
+        }
 
         if (result.length > 0) {
             return res.json({
@@ -65,9 +71,16 @@ app.post('/api/book-room', (req, res) => {
             VALUES (?, ?, ?, ?, ?)
         `;
 
-        db.query(insertSql, [name, studentId, room, timeSlot, date], (err2) => {
-            if (err2) return res.json({ success: false });
-            res.json({ success: true });
+        db.query(insertSql, [name, student_id, room, timeSlot, date], (err2) => {
+            if (err2) {
+                console.log(err2);
+                return res.json({ success: false, message: "บันทึกไม่ได้"  });
+            }
+
+            res.json({ 
+                success: true,
+                booking: { name, student_id, room, date, timeSlot }
+            });
         });
     });
 });
@@ -207,7 +220,7 @@ app.post('/api/login', (req, res) => {
             res.json({
                 success: true,
                 user: {
-                    studentId: result[0].student_id,
+                    student_id: result[0].student_id,
                     name: result[0].username
                 }
             });

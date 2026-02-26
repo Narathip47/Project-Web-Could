@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="layout">
+    <div class="sidebar">
+        <div class="logo">ระบบหลังบ้าน</div>
+        <a href="/AdminSystem.html">Dashboard</a>
+        <a href="/manage-student.html">Manage Students</a>
+        <a href="/manage-admin.html">Manage Admin</a>
+        <a href="/manage-contact.html">Manage Contact</a>
+        <a href="/admin.html">Logout</a>
+    </div>
+
+    <div class="container" style="flex: 1; padding: 30px; background: #f5f6fa;">
+        <h2>Dashboard</h2>
+        <div class="cards" style="margin-top: 20px;">
+            <div class="card">
+                <h2 id="countBookings">0</h2>
+                <p>การจองทั้งหมด</p>
+            </div>
+            <div class="card">
+                <h2 id="countRoomsUsed">0</h2>
+                <p>ห้องที่ถูกใช้งาน</p>
+            </div>
+            <div class="card">
+                <h2 id="countStudents">0</h2>
+                <p>นักศึกษาในระบบ</p>
+            </div>
+            <div class="card">
+                <h2 id="countAdmin">0</h2>
+                <p>จำนวน Admin</p>
+            </div>
+        </div>
+
+        <div class="showGraph">
+
+            <div class="graphBox">
+                <h3>การจองต่อวัน</h3>
+                <canvas id="myChart"></canvas>
+            </div>
+
+            <div class="graphBox">
+                <h3>การจองตามช่วงเวลา</h3>
+                <canvas id="timeChart"></canvas>
+            </div>
+
+            <div class="graphBox">
+                <h3>การใช้ห้อง</h3>
+                <canvas id="popularCategory"></canvas>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

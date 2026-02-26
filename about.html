@@ -1,0 +1,299 @@
+
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>About</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="about.css">
+</head>
+
+<style>
+body{
+  margin:0;
+  font-family: Arial, sans-serif;
+  background:#f5f6fa;
+}
+/* --- Top Bar & Navbar (เหมือนเดิม) --- */
+        .top-bar { background-color: #4361ee; color: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .top-bar-left { display: flex; align-items: center; font-weight: 700; font-size: 1.1rem; }
+        .top-bar-left i { margin-right: 8px; font-size: 1.4rem; }
+        .top-bar-right { display: flex; gap: 20px; align-items: center; }
+        .social-icons i { margin-left: 10px; cursor: pointer; background: white; color: #4361ee; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.8rem; }
+        
+        .navbar { background-color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; z-index: 10; }
+        .nav-links { list-style: none; display: flex; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: #4361ee; }
+        .btn-register { background-color: #4361ee; color: white; padding: 10px 25px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: background 0.3s; }
+        .btn-register:hover { background-color: #304ffe; }
+
+/* ===== Banner (เหมือน Community) ===== */
+.banner{
+  height:350px;
+  background:url('banner.jpg') center/cover no-repeat;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:white;
+  text-align:center;
+}
+
+.banner::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.55);
+}
+
+.banner-content{
+  position:relative;
+  z-index:2;
+}
+
+.banner h1{
+  font-size:60px;
+  margin:0;
+}
+
+.banner p{
+  margin-top:10px;
+  font-size:18px;
+}
+
+.banner span{
+  color:#4a6cf7;
+  font-weight:bold;
+}
+
+/* ===== Team Section ===== */
+.section-title{
+  margin-top:70px;
+  text-align:center;
+  color:#4a6cf7;
+}
+
+.section-title h2{
+  font-size:40px;
+  margin-top:10px;
+}
+
+.team-container{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:30px;
+  padding:40px 20px;
+}
+
+.card{
+  background:#fff;
+  width:260px;
+  border-radius:12px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.1);
+  overflow:hidden;
+  transition:0.3s;
+  text-align:center;
+}
+
+.card:hover{
+  transform:translateY(-8px);
+}
+
+.card img{
+  width:100%;
+  height:260px;
+  object-fit:cover;
+}
+
+.card-body{
+  padding:20px;
+}
+
+.card h3{
+  margin:10px 0 5px;
+}
+
+.position{
+  margin-bottom:15px;
+}
+
+.btn{
+  display:inline-block;
+  padding:8px 18px;
+  background:#4a6cf7;
+  color:white;
+  text-decoration:none;
+  border-radius:6px;
+  font-size:14px;
+}
+
+.btn:hover{
+  background:#2f54eb;
+}
+
+/* ===== Project Button ===== */
+.project-link{
+  display:block;
+  width:fit-content;
+  margin:40px auto 80px;
+  background:#222;
+  color:white;
+  padding:12px 25px;
+  border-radius:6px;
+  text-decoration:none;
+}
+
+/* CSS สำหรับ Footer โดยเฉพาะ */
+    .site-footer {
+        background-color: #4361ee; /* สีน้ำเงินตามรูปต้นฉบับ */
+        color: white;
+        padding: 20px 20px;
+         /* ใช้ฟอนต์ Sarabun */
+    }
+
+    .footer-container {
+        max-width: 1350px;
+        margin: 0 auto; /* จัดกึ่งกลางหน้าจอ */
+        /* หรือถ้าอยากให้ชิดซ้ายเหมือนในรูปเป๊ะๆ ให้ลบ margin: 0 auto; ออกแล้วใส่ padding-left แทน */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .footer-title {
+        font-size: 1.25rem; /* ประมาณ 20px */
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .footer-info p {
+        margin-bottom: 12px;
+        line-height: 1.6;
+        font-size: 1rem;
+        font-weight: 300;
+    }
+
+    .footer-info a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .footer-info a:hover {
+        text-decoration: underline;
+    }
+
+    /* จัดการการตัดคำของที่อยู่ให้เหมือนรูป */
+    .address-line {
+        display: block;
+    }
+
+</style>
+
+<body>
+
+
+<div class="topbar">
+    <div class="top-left"></div>
+    <div class="top-right">
+        📍 KMUTNB, Thailand | 📧 library@gmail.com | 📞 012-345-6789
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="logo">LibraryBooking</div>
+    
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://i.pinimg.com/originals/6c/6a/bd/6c6abd275132826c35b69d915ba77e5d.gif">Services</a></li>
+        <li><a href="admin.html">Admin</a></li>
+    </ul>
+    
+    <div id="nav-auth-section" style="display: flex; gap: 15px; align-items: center;">
+        <a href="register.html" class="btn-nav" style="background: white; color: #4f46e5; border: 1px solid #4f46e5;">สมัครสมาชิก</a>
+        <a href="user-login.html" class="btn-nav">เข้าสู่ระบบ</a>
+    </div>
+</nav>
+
+<!-- Team Section -->
+<div class="section-title">
+  <p>Our Team</p>
+  <h2>Our Expert People Ready to Help You</h2>
+</div>
+
+<div class="team-container">
+
+  <div class="card">
+    <img src="Pleng.jpg">
+    <div class="card-body">
+      <h3>พิริยากร รัตนกุสุมภ์</h3>
+      <div class="position">6604053610234</div>
+      <a href="https://www.instagram.com/Phirisongg/" target="_blank" class="btn">Instagram</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="Sastrajarnearth.jpg">
+    <div class="card-body">
+      <h3>นราธิป รื่นยาน</h3>
+      <div class="position">6604053630171</div>
+      <a href="https://www.instagram.com/earthxmoon__" target="_blank" class="btn">Instagram</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="Aihumdumdutch.jpg">
+    <div class="card-body">
+      <h3>ฮัยดัร ดีแม</h3>
+      <div class="position">6604053630553</div>
+      <a href="https://www.instagram.com/dqr_.ha1dar._" target="_blank" class="btn">Instagram</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="Kayasungkhomsure.jpg">
+    <div class="card-body">
+      <h3>ภวิศ วสุธาสวัสดิ์</h3>
+      <div class="position">6604053610064</div>
+      <a href="https://www.instagram.com/pavit_w_/" target="_blank" class="btn">Instagram</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <img src="Naiyimvanboo.jpg">
+    <div class="card-body">
+      <h3>หริรักษ์ ตึกประโคน</h3>
+      <div class="position">6604053620027</div>
+      <a href="https://www.instagram.com/boo.sohaki/" target="_blank" class="btn">Instagram</a>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-title">สำนักหอสมุดกลาง</div>
+        
+        <div class="footer-info">
+            <p>
+                1518 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง
+                เขตบางซื่อ กรุงเทพฯ 10800
+            </p>
+            
+            <p>Tel : 0-2555-2000 ต่อ 2147</p>
+            
+            <p>Email : <a href="mailto:info@lib.kmutnb.ac.th">info@lib.kmutnb.ac.th</a></p>
+            
+            <p>
+                <a href="https://www.facebook.com/Central.Library.Kmutnb" target="_blank">
+                    www.facebook.com/Central.Library.Kmutnb
+                </a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

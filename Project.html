@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจองห้องสมุด</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Project.css">
+</head>
+<body>
+
+<div class="topbar">
+    <div class="top-left"></div>
+    <div class="top-right">
+        📍 KMUTNB, Thailand | 📧 library@gmail.com | 📞 012-345-6789
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="logo">LibraryBooking</div>
+    
+    <ul class="nav-links">
+        <li><a href="http://localhost:3000/Project.html">Home</a></li>
+        <li><a href="http://localhost:3000/about.html">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="http://localhost:3000/admin.html">Admin</a></li>
+    </ul>
+    
+    <div id="nav-auth-section" style="display: flex; gap: 15px; align-items: center;">
+        <a href="http://localhost:3000/register.html" class="btn-nav" style="background: white; color: #4f46e5; border: 1px solid #4f46e5;">สมัครสมาชิก</a>
+        <a href="http://localhost:3000/user-login.html" class="btn-nav">เข้าสู่ระบบ</a>
+    </div>
+</nav>
+
+<section class="hero">
+    <div class="overlay"></div>
+    <div class="hero-content">
+         <h2>Welcome to ระบบจองห้องสมุด</h2>
+         <h1>Ready to จอง</h1>
+         
+         <div style="display: flex; gap: 15px; margin-top: 20px;">
+             <a href="http://localhost:3000/user-login.html" id="hero-book-btn" class="bth-slide">เข้าสู่ระบบเพื่อจองห้อง</a>
+             <a href="http://localhost:3000/queue.html" class="bth-slide" style="background: #6c757d;">ดูตารางการจอง</a>
+         </div>
+    </div>
+</section>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // ดึงข้อมูลการล็อกอินจากเบราว์เซอร์
+        const currentUserStr = localStorage.getItem('currentUser');
+        
+        const navAuthSection = document.getElementById('nav-auth-section');
+        const heroBookBtn = document.getElementById('hero-book-btn');
+
+        if (currentUserStr) {
+            // ถ้ามีคนล็อกอินอยู่ (แปลงข้อมูลจากตัวหนังสือเป็น Object)
+            const currentUser = JSON.parse(currentUserStr);
+            
+            // 1. เปลี่ยน Navbar มุมขวาบน ให้โชว์ชื่อ และปุ่มออกจากระบบ
+            navAuthSection.innerHTML = `
+                <span style="font-weight: bold; color: #333; font-size: 16px;">สวัสดี, ${currentUser.name}</span>
+                <button id="main-logout-btn" class="btn-nav" style="background: #ef4444; border: none; cursor: pointer; color: white;">ออกจากระบบ</button>
+            `;
+
+            // 2. เปลี่ยนปุ่มกลางจอ ให้พุ่งตรงไปหน้าจองได้เลย
+            heroBookBtn.textContent = "ไปที่หน้าจองห้องสมุด";
+            heroBookBtn.href = "/booking.html";
+
+            // 3. ทำให้ปุ่มออกจากระบบใช้งานได้จริง
+            document.getElementById('main-logout-btn').addEventListener('click', () => {
+                Swal.fire({
+                    title: 'ต้องการออกจากระบบ?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ef4444',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'ออกจากระบบ',
+                    cancelButtonText: 'ยกเลิก'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // ล้างข้อมูลผู้ใช้ออก
+                        localStorage.removeItem('currentUser');
+                        
+                        // รีเฟรชหน้าเว็บ 1 รอบ เพื่อให้ปุ่มกลับไปเป็นแบบเดิม
+                        window.location.reload(); 
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

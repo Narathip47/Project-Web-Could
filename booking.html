@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจองห้องสมุด - เข้าสู่ระบบการจอง</title>
+    <link rel="stylesheet" href="Project.css">
+    <link rel="stylesheet" href="loginadmin.css">
+    <style>
+        .booking-container {
+            background: white;
+            padding: 30px;
+            width: 450px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin: 50px auto;
+        }
+        .booking-container input, .booking-container select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body style="background: #f4f6f9; display: block;">
+
+    <nav class ="navbar">
+        <div class="logo">LibraryBooking</div>
+        <div style="display: flex; gap: 10px;">
+            <a href="/Project.html" class="btn-nav" style="background: #6c757d;">กลับหน้าหลัก</a>
+            <button id="btnLogout" class="btn-nav" style="background: #ef4444; border: none; cursor: pointer; color: white;">ออกจากระบบ</button>
+        </div>
+    </nav>
+
+    <div class="booking-container">
+        <h2 style="color: #4f46e5; margin-bottom: 20px;">จองห้องสมุด</h2>
+        
+        <input type="text" id="b_name" placeholder="ชื่อ-นามสกุล">
+        <input type="text" id="b_studentId" placeholder="รหัสนักศึกษา / เบอร์โทรศัพท์">
+        
+        <select id="b_room">
+            <option value="">-- เลือกห้อง --</option>
+            <option value="Study Room 1 (4 ที่นั่ง)">Study Room 1 (4 ที่นั่ง)</option>
+            <option value="Study Room 2 (4 ที่นั่ง)">Study Room 2 (4 ที่นั่ง)</option>
+            <option value="Meeting Room A (8 ที่นั่ง)">Meeting Room A (8 ที่นั่ง)</option>
+            <option value="Meeting Room B (8 ที่นั่ง)">Meeting Room B (8 ที่นั่ง)</option>
+        </select>
+
+        <input type="date" id="b_date">
+        
+        <select id="b_timeSlot">
+            <option value="">-- เลือกช่วงเวลา --</option>
+            <option value="09:00 - 11:00">09:00 - 11:00</option>
+            <option value="11:00 - 13:00">11:00 - 13:00</option>
+            <option value="13:00 - 15:00">13:00 - 15:00</option>
+            <option value="15:00 - 17:00">15:00 - 17:00</option>
+        </select>
+        
+        <button class="admin-loginBtn" id="submitBooking" style="background: #4f46e5; margin-top: 15px;">ยืนยันการจอง</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        // 1. ตรวจสอบว่ามีข้อมูลผู้ใช้ที่ล็อกอินหรือเปล่า
+        const loggedInUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (!loggedInUser) {
+            // ถ้าไม่มี (แอบเข้าหน้าจองโดยไม่ล็อกอิน) ให้เด้งไปหน้าล็อกอิน
+            alert("กรุณาเข้าสู่ระบบก่อนทำการจองห้องสมุดครับ");
+            window.location.href = '/user-login.html';
+        } else {
+            // ถ้าล็อกอินแล้ว เอาชื่อและรหัสนักศึกษามาใส่ในช่องให้เลย
+            document.getElementById('b_name').value = loggedInUser.name;
+            document.getElementById('b_studentId').value = loggedInUser.studentId;
+            
+            // ล็อกช่องไว้ ไม่ให้คนพิมพ์แก้ชื่อตัวเอง
+            document.getElementById('b_name').disabled = true;
+            document.getElementById('b_studentId').disabled = true;
+        }
+
+        // ตั้งค่าให้เลือกวันที่ย้อนหลังไม่ได้
+        document.getElementById('b_date').min = new Date().toISOString().split("T")[0];
+
+        // 2. โลจิกการกดปุ่มยืนยันจองเหมือนเดิม
+        document.getElementById('submitBooking').addEventListener('click', async () => {
+            const name = document.getElementById('b_name').value;
+            const studentId = document.getElementById('b_studentId').value;
+            const room = document.getElementById('b_room').value;
+            const date = document.getElementById('b_date').value;
+            const timeSlot = document.getElementById('b_timeSlot').value;
+
+            if(!room || !date || !timeSlot) {
+                Swal.fire({ icon: 'warning', title: 'กรุณาเลือกห้องและเวลา' });
+                return;
+            }
+
+            const payload = { name, studentId, room, date, timeSlot };
+
+            try {
+                const res = await fetch('/api/book-room', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                if(data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'จองห้องสำเร็จ!',
+                        text: `คุณได้คิวห้อง ${data.booking.room} เวลา ${data.booking.timeSlot}`,
+                        confirmButtonText: 'ดูตารางการจอง'
+                    }).then(() => {
+                        window.location.href = '/queue.html';
+                    });
+                } else {
+                    Swal.fire({ icon: 'error', title: 'จองไม่ได้', text: data.message });
+                }
+            } catch(err) {
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาดกับเซิร์ฟเวอร์', text: err.message });
+            }
+        });
+
+        // -----------------------------------------
+        // ระบบออกจากระบบ (Logout)
+        // -----------------------------------------
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            Swal.fire({
+                title: 'ต้องการออกจากระบบใช่หรือไม่?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'ใช่, ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // ลบข้อมูล User ออกจากเบราว์เซอร์
+                    localStorage.removeItem('currentUser');
+                    
+                    // แจ้งเตือนแล้วเด้งกลับหน้าหลัก
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'ออกจากระบบสำเร็จ',
+                        timer: 1500,
+                        showConfirmButton: false
+                    }).then(() => {
+                        window.location.href = '/Project.html';
+                    });
+                }
+            });
+        });
+
+    </script>
+

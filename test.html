@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ระบบจองห้องสมุด</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="Project.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<style>
+.hero {
+    position: relative;
+    height: 600px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    overflow: hidden;
+    background-size: cover;
+    background-position: center;
+    transition: background-image 0.5s ease-in-out;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 1;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    color: white;
+    max-width: 600px;
+    transition: opacity 0.3s ease;
+}
+
+.fade-out { opacity: 0; }
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45px;
+    height: 45px;
+    background: rgba(79,70,229,0.8);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    font-size: 20px;
+    z-index: 10;
+}
+
+.arrow-left { left: 20px; }
+.arrow-right { right: 20px; }
+</style>
+</head>
+
+<body>
+
+<div class="topbar">
+    <div class="top-left"></div>
+    <div class="top-right">
+        📍 KMUTNB, Thailand | 📧 library@gmail.com | 📞 012-345-6789
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="logo">LibraryBooking</div>
+    
+    <ul class="nav-links">
+        <li><a href="http://localhost:3000/test.html">Home</a></li>
+        <li><a href="http://localhost:3000/about.html">About</a></li>
+        <li><a href="#">Services</a></li>
+        <li><a href="http://localhost:3000/admin.html">Admin</a></li>
+    </ul>
+    
+    <div id="nav-auth-section" style="display:flex; gap:15px; align-items:center;">
+        <a href="http://localhost:3000/register.html" class="btn-nav" style="background:white; color:#4f46e5; border:1px solid #4f46e5;">สมัครสมาชิก</a>
+        <a href="http://localhost:3000/user-login.html" class="btn-nav">เข้าสู่ระบบ</a>
+    </div>
+</nav>
+
+<header class="hero" id="hero-slider">
+
+    <div class="arrow arrow-left" onclick="prevSlide()">❮</div>
+
+    <div class="hero-content" id="hero-text">
+        <h2 id="slide-subtitle">Welcome to ระบบจองห้องสมุด</h2>
+        <h1 id="slide-title">Ready to จอง</h1>
+
+        <div style="display:flex; gap:15px; margin-top:20px;">
+            <a href="http://localhost:3000/user-login.html" id="hero-book-btn" class="bth-slide">เข้าสู่ระบบเพื่อจองห้อง</a>
+            <a href="http://localhost:3000/queue.html" class="bth-slide" style="background:#6c757d;">ดูตารางการจอง</a>
+        </div>
+    </div>
+
+    <div class="arrow arrow-right" onclick="nextSlide()">❯</div>
+
+</header>
+
+<script>
+// ===== LOGIN STATE =====
+document.addEventListener("DOMContentLoaded", () => {
+    const currentUserStr = localStorage.getItem('currentUser');
+    const navAuthSection = document.getElementById('nav-auth-section');
+    const heroBookBtn = document.getElementById('hero-book-btn');
+
+    if (currentUserStr) {
+        const currentUser = JSON.parse(currentUserStr);
+
+        navAuthSection.innerHTML = `
+            <span style="font-weight:bold; color:#333; font-size:16px;">
+                สวัสดี, ${currentUser.name}
+            </span>
+            <button id="main-logout-btn" class="btn-nav"
+                style="background:#ef4444; border:none; color:white;">
+                ออกจากระบบ
+            </button>
+        `;
+
+        heroBookBtn.textContent = "ไปที่หน้าจองห้องสมุด";
+        heroBookBtn.href = "/booking.html";
+
+        document.getElementById('main-logout-btn').addEventListener('click', () => {
+            Swal.fire({
+                title: 'ต้องการออกจากระบบ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'ออกจากระบบ',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    localStorage.removeItem('currentUser');
+                    window.location.reload();
+                }
+            });
+        });
+    }
+});
+
+// ===== HERO SLIDER =====
+const slides = [
+    {
+        image: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=1600&q=80",
+        subtitle: "ระบบจองห้องสมุด",
+        title: "จองห้องอ่านหนังสือได้ง่ายๆ"
+    },
+    {
+        image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
+        subtitle: "สำหรับนักศึกษา",
+        title: "ใช้งานได้ทันทีในไม่กี่คลิก"
+    },
+    {
+        image: "https://images.unsplash.com/photo-1531482615713-2afd69097998?auto=format&fit=crop&w=1600&q=80",
+        subtitle: "KMUTNB Library",
+        title: "จัดการการจองมีระบบ"
+    }
+];
+
+let currentIndex = 0;
+
+const heroSlider = document.getElementById('hero-slider');
+const slideTitle = document.getElementById('slide-title');
+const slideSubtitle = document.getElementById('slide-subtitle');
+const heroText = document.getElementById('hero-text');
+
+function updateSlideContent() {
+    const currentSlide = slides[currentIndex];
+    heroSlider.style.backgroundImage = `url('${currentSlide.image}')`;
+    slideSubtitle.textContent = currentSlide.subtitle;
+    slideTitle.textContent = currentSlide.title;
+}
+
+function nextSlide() {
+    heroText.classList.add('fade-out');
+    setTimeout(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        updateSlideContent();
+        heroText.classList.remove('fade-out');
+    }, 300);
+}
+
+function prevSlide() {
+    heroText.classList.add('fade-out');
+    setTimeout(() => {
+        currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        updateSlideContent();
+        heroText.classList.remove('fade-out');
+    }, 300);
+}
+
+updateSlideContent();
+</script>
+
+</body>
+</html>

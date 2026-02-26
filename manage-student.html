@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Students</title>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<div class="layout">
+    <div class="sidebar">
+        <div class="logo">ระบบหลังบ้าน</div>
+        <a href="/AdminSystem.html">Dashboard</a>
+        <a href="/manage-students.html">Manage Students</a>
+        <a href="/manage-admin.html">Manage Admin</a>
+        <a href="/manage-contact.html">Manage Contact</a>
+        <a href="/admin.html">Logout</a>
+    </div>
+
+    <div class="main">
+        <h2>รายชื่อนักศึกษาที่ลงทะเบียน</h2>
+        
+        <table class="admin-list">
+            <thead>
+                <tr>
+                    <th>ลำดับ</th>
+                    <th>รหัสนักศึกษา</th>
+                    <th>ชื่อ - นามสกุล</th>
+                    <th>รหัสผ่าน (ซ่อน)</th>
+                </tr>
+            </thead>
+            <tbody id="studentTableBody">
+                </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    async function loadStudents() {
+        try {
+            const res = await fetch('/api/getUsers');
+            const data = await res.json();
+            
+            const tbody = document.getElementById('studentTableBody');
+            tbody.innerHTML = ''; // ล้างข้อมูลเก่า
+
+            if (data.users.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4">ยังไม่มีนักศึกษาลงทะเบียน</td></tr>';
+                return;
+            }
+
+            // วนลูปเอาข้อมูลนักศึกษามาสร้างเป็นแถวตาราง
+            data.users.forEach((user, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td style="font-weight: bold; color: #2f54eb;">${user.studentId}</td>
+                    <td>${user.name}</td>
+                    <td>***</td> 
+                `;
+                tbody.appendChild(tr);
+            });
+        } catch(err) {
+            console.error('โหลดข้อมูลนักศึกษาล้มเหลว', err);
+        }
+    }
+
+    loadStudents();
+</script>
+</body>
+</html>

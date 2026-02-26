@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>เข้าสู่ระบบ</title>
+    <link rel="stylesheet" href="Project.css">
+    <link rel="stylesheet" href="loginadmin.css">
+</head>
+<body style="background: #f4f6f9; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh;">
+
+    <div class="login-container">
+        <h2 style="color: #4f46e5; margin-bottom: 20px;">เข้าสู่ระบบนักศึกษา</h2>
+        <input type="text" id="log_studentId" placeholder="รหัสนักศึกษา">
+        <input type="password" id="log_password" placeholder="รหัสผ่าน">
+        
+        <button class="admin-loginBtn" id="btnLogin">เข้าสู่ระบบ</button>
+        <a href="/register.html" class="goBackk" style="display: block; margin-top: 15px; color: #666; font-size: 14px; text-decoration: none;">ยังไม่มีบัญชี? สมัครสมาชิก</a>
+        <br>
+        <a href="home.html" style="font-size: 12px; color: gray;">กลับหน้าหลัก</a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+            const studentId = document.getElementById('log_studentId').value;
+            const password = document.getElementById('log_password').value;
+
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ studentId, password })
+            });
+            const data = await res.json();
+
+            if(data.success) {
+                // เก็บข้อมูล User ลงในเบราว์เซอร์ เพื่อให้หน้าจองรู้ว่าใครล็อกอิน
+                localStorage.setItem('currentUser', JSON.stringify(data.user));
+                
+                window.location.href = '/booking.html'; // ล็อกอินผ่าน เด้งไปหน้าจอง
+            } else {
+                Swal.fire({ icon: 'error', title: 'ล็อกอินล้มเหลว', text: data.message });
+            }
+        });
+    </script>
+</body>
+</html>

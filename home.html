@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LibraryBooking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="home_style.css">
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+        body { background-color: #f4f4f4; }
+
+        /* --- Top Bar & Navbar (เหมือนเดิม) --- */
+        .top-bar { background-color: #4361ee; color: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .top-bar-left { display: flex; align-items: center; font-weight: 700; font-size: 1.1rem; }
+        .top-bar-left i { margin-right: 8px; font-size: 1.4rem; }
+        .top-bar-right { display: flex; gap: 20px; align-items: center; }
+        .social-icons i { margin-left: 10px; cursor: pointer; background: white; color: #4361ee; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.8rem; }
+        
+        .navbar { background-color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; z-index: 10; }
+        .nav-links { list-style: none; display: flex; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: #4361ee; }
+        .btn-register { background-color: #4361ee; color: white; padding: 10px 25px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: background 0.3s; }
+        .btn-register:hover { background-color: #304ffe; }
+
+        /* --- Hero Section (ปรับปรุงใหม่) --- */
+        .hero {
+            position: relative;
+            height: 600px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 0 5%;
+            overflow: hidden;
+            /* พื้นหลังเริ่มต้น */
+            background-color: #333; 
+            transition: background-image 0.5s ease-in-out; /* ทำให้ภาพเปลี่ยนนุ่มนวล */
+            background-size: cover;
+            background-position: center;
+        }
+
+        /* Overlay สีดำทับภาพ เพื่อให้อ่านตัวหนังสือออก */
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.4);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2; /* ให้อยู่เหนือ Overlay */
+            color: white;
+            max-width: 600px;
+            /* เพิ่ม Animation ตอนเปลี่ยน slide */
+            transition: opacity 0.3s ease;
+            opacity: 1;
+        }
+
+        /* Class สำหรับซ่อนข้อความชั่วคราวตอนเปลี่ยน slide */
+        .fade-out {
+            opacity: 0;
+        }
+
+        .hero-content h4 { font-size: 1.2rem; font-weight: 500; margin-bottom: 10px; }
+        .hero-content h1 { font-size: 3.5rem; font-weight: 700; line-height: 1.2; margin-bottom: 25px; }
+
+        .btn-explore { background-color: #4361ee; color: white; padding: 12px 30px; border: none; border-radius: 5px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: transform 0.2s; }
+        .btn-explore:hover { transform: translateY(-2px); }
+
+        .btn-explore2 { background-color: #7f7f7f; color: rgb(255, 255, 255); padding: 12px 30px; border: none; border-radius: 5px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: transform 0.2s; }
+        .btn-explore2:hover { transform: translateY(-2px); }
+
+        .arrow {
+            position: absolute;
+            top: 50%;       
+            transform: translateY(-50%);
+            width: 50px; height: 50px;
+            background-color: rgba(67, 97, 238, 0.8);
+            color: white;
+            border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: background 0.3s;
+            z-index: 10; /* ให้ปุ่มอยู่บนสุดเสมอ */
+            user-select: none; /* ห้ามเลือกข้อความบนปุ่ม */
+        }
+        .arrow:hover { background-color: rgba(67, 97, 238, 1); }
+        .arrow-left { left: 20px; }
+        .arrow-right { right: 20px; }
+
+
+
+
+    /* CSS สำหรับ Footer โดยเฉพาะ */
+    .site-footer {
+        background-color: #4361ee; /* สีน้ำเงินตามรูปต้นฉบับ */
+        color: white;
+        padding: 20px 20px;
+        font-family: 'Sarabun', sans-serif; /* ใช้ฟอนต์ Sarabun */
+    }
+
+    .footer-container {
+        max-width: 1350px;
+        margin: 0 auto; /* จัดกึ่งกลางหน้าจอ */
+        /* หรือถ้าอยากให้ชิดซ้ายเหมือนในรูปเป๊ะๆ ให้ลบ margin: 0 auto; ออกแล้วใส่ padding-left แทน */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .footer-title {
+        font-size: 1.25rem; /* ประมาณ 20px */
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .footer-info p {
+        margin-bottom: 12px;
+        line-height: 1.6;
+        font-size: 1rem;
+        font-weight: 300;
+    }
+
+    .footer-info a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .footer-info a:hover {
+        text-decoration: underline;
+    }
+
+    /* จัดการการตัดคำของที่อยู่ให้เหมือนรูป */
+    .address-line {
+        display: block;
+    }
+
+
+
+    </style>
+</head>
+<body>
+
+
+<div class="topbar">
+    <div class="top-left"></div>
+    <div class="top-right">
+        📍 KMUTNB, Thailand | 📧 library@gmail.com | 📞 012-345-6789
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="logo">LibraryBooking</div>
+    
+    <ul class="nav-links">
+        <li><a href="home.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="https://i.pinimg.com/originals/6c/6a/bd/6c6abd275132826c35b69d915ba77e5d.gif">Services</a></li>
+        <li><a href="admin.html">Admin</a></li>
+    </ul>
+    
+    <div id="nav-auth-section" style="display: flex; gap: 15px; align-items: center;">
+        <a href="register.html" class="btn-nav" style="background: white; color: #4f46e5; border: 1px solid #4f46e5;">สมัครสมาชิก</a>
+        <a href="user-login.html" class="btn-nav">เข้าสู่ระบบ</a>
+    </div>
+</nav>
+
+
+
+
+
+    <header class="hero" id="hero-slider">
+        
+        <div class="arrow arrow-left" onclick="prevSlide()">
+            <i class="fa-solid fa-chevron-left"></i>
+        </div>
+
+        <div class="hero-content" id="hero-text">
+            <h4 id="slide-subtitle">Welcome to LibraryBooking</h4>
+            <h1 id="slide-title">You can booking now.</h1>
+            <button class="btn-explore" onclick="window.location.href='user-login.html'">เข้าสู่ระบบเพื่อจองห้อง</button>
+            <button class="btn-explore2" onclick="window.location.href='https://smartroom.lib.kmutnb.ac.th/'" >ดูตารางการจอง</button>
+            
+        </div>
+
+        <div class="arrow arrow-right" onclick="nextSlide()">
+            <i class="fa-solid fa-chevron-right"></i>
+        </div>
+    </header>
+
+    <script>
+        // 1. ข้อมูลรูปภาพและข้อความที่จะเปลี่ยน (Array of Objects)
+        const slides = [
+            {
+                image: "backimg1.jpg",
+                subtitle: "",
+                title: "จองห้องอ่านหนังสือได้ง่ายๆ"
+            },
+            {
+                image: "backimg4.jpg",
+                subtitle: "",
+                title: "ใช้งานได้ทันทีในไม่กี่คลิก"
+            },
+            {
+                image: "backimg3.jpg",
+                subtitle: "",
+                title: "บริการทรัพยากรสารสนเทศประเภทต่างๆ"
+            }
+        ];
+
+        let currentIndex = 0; // ตัวแปรบอกตำแหน่งภาพปัจจุบัน (เริ่มที่ 0)
+
+        // ดึง Element จาก HTML มาเก็บไว้ในตัวแปร
+        const heroSlider = document.getElementById('hero-slider');
+        const slideTitle = document.getElementById('slide-title');
+        const slideSubtitle = document.getElementById('slide-subtitle');
+        const heroText = document.getElementById('hero-text');
+
+        // ฟังก์ชันเริ่มการทำงานครั้งแรก
+        function initSlider() {
+            updateSlideContent();
+        }
+
+        // ฟังก์ชันอัปเดตเนื้อหาบนหน้าจอ
+        function updateSlideContent() {
+            const currentSlide = slides[currentIndex];
+            
+            // เปลี่ยนรูปภาพพื้นหลัง
+            heroSlider.style.backgroundImage = `url('${currentSlide.image}')`;
+            
+            // เปลี่ยนข้อความ
+            slideSubtitle.textContent = currentSlide.subtitle;
+            slideTitle.textContent = currentSlide.title;
+        }
+
+        // ฟังก์ชันกดปุ่มถัดไป
+        function nextSlide() {
+            // เพิ่ม Animation fade out
+            heroText.classList.add('fade-out');
+
+            setTimeout(() => {
+                currentIndex++;
+                // ถ้าเกินรูปสุดท้าย ให้กลับไปรูปแรก
+                if (currentIndex >= slides.length) {
+                    currentIndex = 0;
+                }
+                updateSlideContent();
+                // เอา Animation fade out ออก (เพื่อให้ข้อความแสดงขึ้นมา)
+                heroText.classList.remove('fade-out');
+            }, 300); // รอ 0.3 วินาทีให้ข้อความจางหายก่อนค่อยเปลี่ยน
+        }
+
+        // ฟังก์ชันกดปุ่มก่อนหน้า
+        function prevSlide() {
+            heroText.classList.add('fade-out');
+
+            setTimeout(() => {
+                currentIndex--;
+                // ถ้าต่ำกว่า 0 ให้ไปรูปสุดท้าย
+                if (currentIndex < 0) {
+                    currentIndex = slides.length - 1;
+                }
+                updateSlideContent();
+                heroText.classList.remove('fade-out');
+            }, 300);
+        }
+
+        // เริ่มทำงานทันทีที่โหลดหน้าเว็บ
+        initSlider();
+
+    </script>
+
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-title">สำนักหอสมุดกลาง</div>
+        
+        <div class="footer-info">
+            <p>
+                1518 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง
+                เขตบางซื่อ กรุงเทพฯ 10800
+            </p>
+            
+            <p>Tel : 0-2555-2000 ต่อ 2147</p>
+            
+            <p>Email : <a href="mailto:info@lib.kmutnb.ac.th">info@lib.kmutnb.ac.th</a></p>
+            
+            <p>
+                <a href="https://www.facebook.com/Central.Library.Kmutnb" target="_blank">
+                    www.facebook.com/Central.Library.Kmutnb
+                </a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

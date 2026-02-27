@@ -13,7 +13,9 @@ CREATE TABLE IF NOT EXISTS `queue_admin`(
 INSERT INTO queue_admin (username, email, password)
 VALUES ('admin', 'admin@gmail.com', '1234');
 
-DROP TABLE IF EXISTS queue_students;
+-- NOTE: avoid dropping `queue_students` automatically here to prevent
+-- accidental data loss when running this script on a production DB.
+-- DROP TABLE IF EXISTS queue_students;
 CREATE TABLE IF NOT EXISTS `queue_students`(
     `id` int(11) not null auto_increment,
     `student_id` VARCHAR(20) not null,
@@ -22,6 +24,10 @@ CREATE TABLE IF NOT EXISTS `queue_students`(
     PRIMARY KEY (`id`)
 );
 
+-- Add a small test account if none exists (safe to run multiple times)
+INSERT INTO queue_students (student_id, username, password)
+SELECT 'test123', 'Test User', '1234'
+WHERE NOT EXISTS (SELECT 1 FROM queue_students WHERE student_id = 'test123');
 
 CREATE TABLE IF NOT EXISTS `queue_contact`(
     `id` int(11) not null auto_increment,
@@ -30,6 +36,7 @@ CREATE TABLE IF NOT EXISTS `queue_contact`(
     `subject` text NOT NULL,
     `message` text NOT NULL,
     `date` text NOT NULL,
+    `status` text NOT NULL DEFAULT 'จองแล้ว',
     PRIMARY KEY (`id`)
 );
 

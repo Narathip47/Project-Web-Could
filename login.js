@@ -96,9 +96,7 @@ app.post('/api/book-room', (req, res) => {
 // GET BOOKINGS
 // ==========================================
 app.get('/api/getBookings', (req, res) => {
-    // the original schema doesn't include a status column, so simply
-    // select all columns and let the client side interpret a missing
-    // status as "จองแล้ว".
+    // select all bookings; client treats missing `status` as 'จองแล้ว'
     const sql = "SELECT * FROM queue_contact ORDER BY date ASC";
 
     db.query(sql, (err, result) => {
@@ -112,23 +110,30 @@ app.get('/api/getBookings', (req, res) => {
 // CANCEL BOOKING
 // ==========================================
 app.post('/api/cancel-booking', (req, res) => {
-    const { id, student_id } = req.body;
+    const { bookingId, student_id } = req.body;
 
-    if (!id || !student_id) {
+    if (!bookingId || !student_id) {
         return res.json({ success: false, message: "ข้อมูลไม่ครบ" });
     }
 
-    // ตรวจสอบว่านี่คือของเจ้าของจริง
+    // ตรวจสอบสิทธิ์ของผู้ขอยกเลิก (email field stores student_id)
     const checkSql = "SELECT * FROM queue_contact WHERE id = ? AND email = ?";
-    
-    db.query(checkSql, [id, student_id], (err, result) => {
-        if (err || result.length === 0) {
+    db.query(checkSql, [bookingId, student_id], (err, result) => {
+        if (err) {
+            console.error('[ERROR] cancel-booking check failed:', err);
+            return res.json({ success: false, message: "เกิดข้อผิดพลาด" });
+        }
+
+        if (!result || result.length === 0) {
             return res.json({ success: false, message: "ไม่พบคิวนี้หรือคุณไม่มีสิทธิ์ลบ" });
         }
 
         const sql = "DELETE FROM queue_contact WHERE id = ?";
-        db.query(sql, [id], (err) => {
-            if (err) return res.json({ success: false, message: "ลบไม่ได้" });
+        db.query(sql, [bookingId], (delErr) => {
+            if (delErr) {
+                console.error('[ERROR] cancel-booking delete failed:', delErr);
+                return res.json({ success: false, message: "ลบไม่ได้" });
+            }
             res.json({ success: true });
         });
     });
@@ -224,6 +229,7 @@ app.post('/api/register', (req, res) => {
         });
     });
 });
+
 
 
 // ==========================================
@@ -343,14 +349,28 @@ function cleanupExpiredBookings() {
         if (toCancel.length === 0) return;
 
         const placeholders = toCancel.map(() => '?').join(',');
-        const updateSql = `UPDATE queue_contact SET status = 'ยกเลิกโดยระบบ' WHERE id IN (${placeholders})`;
-        db.query(updateSql, toCancel, (uErr, uRes) => {
-            if (uErr) {
-                console.error('[ERROR] cleanup update failed:', uErr);
-                return;
-            }
-            console.log(`[CLEANUP] Marked ${toCancel.length} booking(s) as ยกเลิกโดยระบบ`);
-        });
+        // If CLEANUP_DELETE is set (1 or 'true'), delete expired rows instead
+        const shouldDelete = (process.env.CLEANUP_DELETE === '1' || String(process.env.CLEANUP_DELETE).toLowerCase() === 'true');
+
+        if (shouldDelete) {
+            const deleteSql = `DELETE FROM queue_contact WHERE id IN (${placeholders})`;
+            db.query(deleteSql, toCancel, (uErr, uRes) => {
+                if (uErr) {
+                    console.error('[ERROR] cleanup delete failed:', uErr);
+                    return;
+                }
+                console.log(`[CLEANUP] Deleted ${toCancel.length} expired booking(s)`);
+            });
+        } else {
+            const updateSql = `UPDATE queue_contact SET status = 'ยกเลิกโดยระบบ' WHERE id IN (${placeholders})`;
+            db.query(updateSql, toCancel, (uErr, uRes) => {
+                if (uErr) {
+                    console.error('[ERROR] cleanup update failed:', uErr);
+                    return;
+                }
+                console.log(`[CLEANUP] Marked ${toCancel.length} booking(s) as ยกเลิกโดยระบบ`);
+            });
+        }
     });
 }
 
@@ -365,3 +385,4 @@ setInterval(cleanupExpiredBookings, CLEANUP_INTERVAL_MS);
 app.listen(3000, () => {
     console.log("Server running at http://localhost:3000");
 });
+

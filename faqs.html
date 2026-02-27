@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำถามที่พบบ่อย (FAQs) - LibraryBooking</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="faqs_style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+         /* --- Top Bar & Navbar (เหมือนเดิม) --- */
+        .top-bar { background-color: #4361ee; color: white; padding: 10px 5%; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; }
+        .top-bar-left { display: flex; align-items: center; font-weight: 700; font-size: 1.1rem; }
+        .top-bar-left i { margin-right: 8px; font-size: 1.4rem; }
+        .top-bar-right { display: flex; gap: 20px; align-items: center; }
+        .social-icons i { margin-left: 10px; cursor: pointer; background: white; color: #4361ee; border-radius: 50%; width: 24px; height: 24px; display: inline-flex; justify-content: center; align-items: center; font-size: 0.8rem; }
+        
+        .navbar { background-color: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); position: relative; z-index: 10; }
+        .nav-links { list-style: none; display: flex; gap: 25px; }
+        .nav-links a { text-decoration: none; color: #555; font-weight: 600; font-size: 0.9rem; text-transform: uppercase; transition: color 0.3s; }
+        .nav-links a:hover { color: #4361ee; }
+        .btn-register { background-color: #4361ee; color: white; padding: 10px 25px; border: none; border-radius: 50px; font-weight: 600; cursor: pointer; text-transform: uppercase; font-size: 0.85rem; transition: background 0.3s; }
+        .btn-register:hover { background-color: #304ffe; }
+
+
+        
+    /* CSS สำหรับ Footer โดยเฉพาะ */
+    .site-footer {
+        background-color: #4361ee; /* สีน้ำเงินตามรูปต้นฉบับ */
+        color: white;
+        padding: 20px 20px;
+        font-family: 'Sarabun', sans-serif; /* ใช้ฟอนต์ Sarabun */
+    }
+
+    .footer-container {
+        max-width: 1350px;
+        margin: 0 auto; /* จัดกึ่งกลางหน้าจอ */
+        /* หรือถ้าอยากให้ชิดซ้ายเหมือนในรูปเป๊ะๆ ให้ลบ margin: 0 auto; ออกแล้วใส่ padding-left แทน */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .footer-title {
+        font-size: 1.25rem; /* ประมาณ 20px */
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+
+    .footer-info p {
+        margin-bottom: 12px;
+        line-height: 1.6;
+        font-size: 1rem;
+        font-weight: 300;
+    }
+
+    .footer-info a {
+        color: white;
+        text-decoration: none;
+    }
+
+    .footer-info a:hover {
+        text-decoration: underline;
+    }
+
+    /* จัดการการตัดคำของที่อยู่ให้เหมือนรูป */
+    .address-line {
+        display: block;
+    }
+    </style>
+    
+</head>
+<body>
+
+    
+<div class="top-bar">
+    <div class="top-bar-left">
+        
+    </div>
+    <div class="top-bar-right">
+        📍 KMUTNB, Thailand | 📧 library@gmail.com | 📞 012-345-6789
+    </div>
+</div>
+
+<nav class="navbar">
+    <div class="logo">LibraryBooking</div>
+
+    <ul class="nav-links">
+        <li><a href="http://localhost:3000/home.html">Home</a></li>
+        <li><a href="http://localhost:3000/about.html">About</a></li>
+        <li><a href="http://localhost:3000/faqs.html">Faqs</a></li>
+        <li><a href="http://localhost:3000/admin.html">Admin</a></li>
+    </ul>
+
+    <div id="nav-auth-section" style="display: flex; gap: 15px; align-items: center;">
+        <a href="http://localhost:3000/register.html" class="btn-nav" style="background: white; color: #4f46e5; border: 1px solid #4f46e5;">สมัครสมาชิก</a>
+        <a href="http://localhost:3000/user-login.html" class="btn-nav">เข้าสู่ระบบ</a>
+    </div>
+</nav>
+
+
+
+    <div class="faq-container">
+        <h2>คำถามที่พบบ่อย (FAQs)</h2>
+        <p class="faq-subtitle">รวบรวมคำตอบสำหรับข้อสงสัยในการจองห้องสมุด</p>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    สามารถจองห้องสมุดล่วงหน้าได้กี่วัน?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>นักศึกษาสามารถจองห้องอ่านหนังสือล่วงหน้าได้สูงสุด 365 ปีทำการ ผ่านระบบ LibraryBooking ของเราครับ</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">   
+                    หากจองไว้แล้วแต่ไปไม่ได้ จะยกเลิกได้อย่างไร?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>คุณสามารถยกเลิกการจองได้โดยเข้าสู่ระบบ ไปที่เมนู "ประวัติการจองของฉัน" และกดยกเลิกในรายการที่ต้องการ (กรุณายกเลิกล่วงหน้าอย่างน้อย 1 ชั่วโมง)</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    บุคคลภายนอกสามารถจองห้องได้หรือไม่?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>ขออภัยครับ ปัจจุบันระบบ LibraryBooking สงวนสิทธิ์การใช้งานเฉพาะนักศึกษาและบุคลากรที่มีรหัสประจำตัวของสถาบันเท่านั้น</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    หากมาใช้ห้องสายเกินเวลาที่จองไว้ จะเกิดอะไรขึ้น?
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>หากผู้จองไม่มาแสดงตัวที่ห้องภายใน 15 นาทีหลังจากถึงเวลาที่จองไว้ ระบบจะทำการยกเลิกการจองนั้นอัตโนมัติ เพื่อให้สิทธิ์แก่ผู้ใช้งานท่านอื่นครับ</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-footer">
+            <p>ไม่พบคำถามที่คุณสงสัยใช่ไหม? โปรดติดต่อฝ่ายสนับสนุนที่ <a href="#">bidkomkom@gmail.com</a></p>
+        </div>
+    </div>
+
+    <script src="faqs_script.js"></script>
+
+
+<footer class="site-footer">
+    <div class="footer-container">
+        <div class="footer-title">สำนักหอสมุดกลาง</div>
+        
+        <div class="footer-info">
+            <p>
+                1518 ถนนประชาราษฎร์ 1 แขวงวงศ์สว่าง
+                เขตบางซื่อ กรุงเทพฯ 10800
+            </p>
+            
+            <p>Tel : 0-2555-2000 ต่อ 2147</p>
+            
+            <p>Email : <a href="mailto:info@lib.kmutnb.ac.th">info@lib.kmutnb.ac.th</a></p>
+            
+            <p>
+                <a href="https://www.facebook.com/Central.Library.Kmutnb" target="_blank">
+                    www.facebook.com/Central.Library.Kmutnb
+                </a>
+            </p>
+        </div>
+    </div>
+</footer>
+
+
+</body>
+</html>

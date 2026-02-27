@@ -99,3 +99,12 @@ body {
     text-decoration: none;
     font-weight: bold;
 }
+
+/* บังคับให้แถบด้านบนและเมนู ใช้ฟอนต์ Poppins */
+.top-bar, 
+.navbar, 
+.nav-links a, 
+.btn-register, 
+.btn-login { /* ถ้าปุ่มเข้าสู่ระบบคุณใช้ class อื่น ให้แก้ตรงนี้ด้วยนะครับ */
+    font-family: 'Poppins', sans-serif;
+}

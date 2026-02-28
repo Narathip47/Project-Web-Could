@@ -21,7 +21,7 @@
     </div>
     <div class="main">
         <h2>List of contact</h2>
-        <table class = "admin-list">
+        <table class = "admin-list" id="contactTable">
             <tr>
                 <th>No.</th>
                 <th>Username</th>
@@ -34,5 +34,86 @@
         </table>
     </div>
 </div>
+<script>
+function loadContacts() {
+    fetch('/api/getBookings')
+        .then(res => res.json())
+        .then(data => {
+
+            if (!data.success) return;
+
+            const table = document.getElementById('contactTable');
+
+            table.innerHTML = `
+                <tr>
+                    <th>No.</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Subject</th>
+                    <th>Date</th>
+                    <th>Detail</th>
+                    <th>Delete</th>
+                </tr>
+            `;
+
+            data.bookings.forEach((item, index) => {
+
+                const row = document.createElement("tr");
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.username}</td>
+                    <td>${item.email}</td>
+                    <td>${item.subject}</td>
+                    <td>${item.date}</td>
+                    <td>
+                        <button class="detailBtn">✏️</button>
+                    </td>
+                    <td>
+                        <button class="deleteBtn">🗑️</button>
+                    </td>
+                `;
+
+                row.querySelector(".detailBtn").addEventListener("click", () => {
+                    alert("Message: " + item.message);
+                });
+
+                row.querySelector(".deleteBtn").addEventListener("click", () => {
+                    deleteContact(item.id);
+                });
+
+                table.appendChild(row);
+            });
+
+        });
+}
+
+function deleteContact(id) {
+
+    if (!confirm("ต้องการลบจริงไหม?")) return;
+
+    fetch('/api/cancel-booking', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            bookingId: id,
+            student_id: "" // admin ลบได้เลย
+        })
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.success) {
+            alert("ลบสำเร็จ");
+            loadContacts();
+        } else {
+            alert(data.message || "ลบไม่ได้");
+        }
+    });
+}
+
+loadContacts();
+</script>
 </body>
 </html>

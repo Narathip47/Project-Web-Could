@@ -38,6 +38,70 @@ app.post('/checkLoginAdminData', (req, res) => {
     });
 });
 
+// ==========================================
+// ADMIN: GET ADMINS
+// ==========================================
+app.get('/api/getAdmins', (req, res) => {
+
+    const sql = "SELECT * FROM queue_admin";
+
+    db.query(sql, (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+
+        res.json({
+            success: true,
+            admins: result
+        });
+    });
+});
+
+
+// ==========================================
+// ADMIN: DELETE ADMIN
+// ==========================================
+app.delete('/api/deleteAdmin/:id', (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = "DELETE FROM queue_admin WHERE id = ?";
+
+    db.query(sql, [id], (err) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+
+        res.json({ success: true });
+    });
+});
+
+
+// ==========================================
+// ADMIN: UPDATE ADMIN
+// ==========================================
+app.put('/api/updateAdmin/:id', (req, res) => {
+
+    const id = req.params.id;
+    const { username, email, password } = req.body;
+
+    const sql = `
+        UPDATE queue_admin
+        SET username = ?, email = ?, password = ?
+        WHERE id = ?
+    `;
+
+    db.query(sql, [username, email, password, id], (err) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+
+        res.json({ success: true });
+    });
+});
 
 // ==========================================
 // 2. BOOK ROOM
@@ -112,28 +176,36 @@ app.get('/api/getBookings', (req, res) => {
 app.post('/api/cancel-booking', (req, res) => {
     const { bookingId, student_id } = req.body;
 
-    if (!bookingId || !student_id) {
-        return res.json({ success: false, message: "ข้อมูลไม่ครบ" });
+    if (!bookingId) {
+        return res.json({ success: false, message: "ไม่พบรหัสคิว" });
     }
 
-    // ตรวจสอบสิทธิ์ของผู้ขอยกเลิก (email field stores student_id)
+    // ถ้าเป็น admin (ไม่มี student_id) → ลบได้เลย
+    if (!student_id) {
+        const sql = "DELETE FROM queue_contact WHERE id = ?";
+        db.query(sql, [bookingId], (err) => {
+            if (err) {
+                console.error(err);
+                return res.json({ success: false });
+            }
+            return res.json({ success: true });
+        });
+        return;
+    }
+
+    // ถ้าเป็น student → ต้องตรวจสอบสิทธิ์ก่อน
     const checkSql = "SELECT * FROM queue_contact WHERE id = ? AND email = ?";
     db.query(checkSql, [bookingId, student_id], (err, result) => {
-        if (err) {
-            console.error('[ERROR] cancel-booking check failed:', err);
-            return res.json({ success: false, message: "เกิดข้อผิดพลาด" });
-        }
 
-        if (!result || result.length === 0) {
-            return res.json({ success: false, message: "ไม่พบคิวนี้หรือคุณไม่มีสิทธิ์ลบ" });
+        if (err) return res.json({ success: false });
+
+        if (result.length === 0) {
+            return res.json({ success: false, message: "คุณไม่มีสิทธิ์ลบ" });
         }
 
         const sql = "DELETE FROM queue_contact WHERE id = ?";
-        db.query(sql, [bookingId], (delErr) => {
-            if (delErr) {
-                console.error('[ERROR] cancel-booking delete failed:', delErr);
-                return res.json({ success: false, message: "ลบไม่ได้" });
-            }
+        db.query(sql, [bookingId], (err2) => {
+            if (err2) return res.json({ success: false });
             res.json({ success: true });
         });
     });

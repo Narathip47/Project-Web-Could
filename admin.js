@@ -40,6 +40,13 @@ if(loginBtn){
                     showConfirmButton: false
                 })
             }else{
+                // save basic admin info in localStorage for UI display
+                try{
+                    if(data.user && data.user.username){
+                        localStorage.setItem('adminUser', JSON.stringify(data.user));
+                    }
+                }catch(e){ /* ignore */ }
+
                 window.location.replace(data.page)
             }
 

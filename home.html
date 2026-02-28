@@ -171,6 +171,18 @@
         <a href="http://localhost:3000/register.html" class="btn-nav" style="background: white; color: #4f46e5; border: 1px solid #4f46e5;">สมัครสมาชิก</a>
         <a href="http://localhost:3000/user-login.html" class="btn-nav">เข้าสู่ระบบ</a>
     </div>
+
+    <!-- Admin user display (top-right) -->
+    <div id="admin-display" style="display: none; gap: 12px; align-items: center;">
+        <span id="adminUsername" style="color: #333; font-weight: 600;"></span>
+        <button id="adminLogoutBtn" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Logout</button>
+    </div>
+
+    <!-- Student user display (top-right) -->
+    <div id="student-display" style="display: none; gap: 12px; align-items: center;">
+        <span id="studentUsername" style="color: #333; font-weight: 600;"></span>
+        <button id="studentLogoutBtn" style="background: #dc3545; color: white; border: none; padding: 8px 12px; border-radius: 5px; cursor: pointer;">Logout</button>
+    </div>
 </nav>
 
     <header class="hero" id="hero-slider">
@@ -182,7 +194,7 @@
         <div class="hero-content" id="hero-text">
             <h4 id="slide-subtitle">Welcome to LibraryBooking</h4>
             <h1 id="slide-title">You can booking now.</h1>
-            <button class="btn-explore" onclick="window.location.href='user-login.html'">เข้าสู่ระบบเพื่อจองห้อง</button>
+            <button class="btn-explore" id="bookingBtnMain" onclick="handleBookingClick()">จองห้องสมุด</button>
             <button class="btn-explore2" onclick="window.location.href='http://localhost:3000/queue.html'" >ดูตารางการจอง</button>
             
         </div>
@@ -271,6 +283,56 @@
 
         // เริ่มทำงานทันทีที่โหลดหน้าเว็บ
         initSlider();
+
+        // Check if admin or student is logged in and show/hide UI accordingly
+        (function() {
+            try {
+                const rawAdminUser = localStorage.getItem('adminUser');
+                const rawStudentUser = localStorage.getItem('currentUser');
+
+                if (rawAdminUser) {
+                    const user = JSON.parse(rawAdminUser);
+                    if (user && user.username) {
+                        // Show admin display, hide regular auth section
+                        document.getElementById('nav-auth-section').style.display = 'none';
+                        document.getElementById('admin-display').style.display = 'flex';
+                        document.getElementById('adminUsername').textContent = user.username;
+
+                        // Logout button handler
+                        document.getElementById('adminLogoutBtn').addEventListener('click', () => {
+                            localStorage.removeItem('adminUser');
+                            location.reload();
+                        });
+                    }
+                } else if (rawStudentUser) {
+                    const user = JSON.parse(rawStudentUser);
+                    if (user && user.name) {
+                        // Show student display, hide regular auth section
+                        document.getElementById('nav-auth-section').style.display = 'none';
+                        document.getElementById('student-display').style.display = 'flex';
+                        document.getElementById('studentUsername').textContent = user.name;
+
+                        // Logout button handler
+                        document.getElementById('studentLogoutBtn').addEventListener('click', () => {
+                            localStorage.removeItem('currentUser');
+                            location.reload();
+                        });
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        })();
+
+        // Handle booking button click
+        function handleBookingClick() {
+            const studentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (studentUser && studentUser.name) {
+                // Student is logged in
+                window.location.href = '/booking.html';
+            } else {
+                // Not logged in, go to login
+                window.location.href = '/user-login.html';
+            }
+        }
 
     </script>
 

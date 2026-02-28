@@ -23,9 +23,16 @@ app.post('/checkLoginAdminData', (req, res) => {
         if (err) return res.json({ checkAdmin: false });
 
         if (result.length > 0) {
+            // return basic user info so client can show username
+            const user = result[0];
             res.json({
                 checkAdmin: true,
-                page: "/AdminSystem.html"
+                page: "/AdminSystem.html",
+                user: {
+                    id: user.id,
+                    username: user.username,
+                    email: user.email
+                }
             });
         } else {
             res.json({
@@ -54,6 +61,40 @@ app.get('/api/getAdmins', (req, res) => {
         res.json({
             success: true,
             admins: result
+        });
+    });
+});
+
+
+// ==========================================
+// ADMIN: ADD ADMIN
+// ==========================================
+app.post('/api/addAdmin', (req, res) => {
+    const { username, email, password } = req.body;
+
+    if (!username || !email || !password) {
+        return res.json({ success: false, message: 'กรอกข้อมูลไม่ครบ' });
+    }
+
+    const checkSql = `SELECT * FROM queue_admin WHERE email = ?`;
+    db.query(checkSql, [email], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.json({ success: false });
+        }
+
+        if (result.length > 0) {
+            return res.json({ success: false, message: 'Email นี้ถูกใช้งานแล้ว' });
+        }
+
+        const insertSql = `INSERT INTO queue_admin (username, email, password) VALUES (?, ?, ?)`;
+        db.query(insertSql, [username, email, password], (err2) => {
+            if (err2) {
+                console.error(err2);
+                return res.json({ success: false });
+            }
+
+            res.json({ success: true });
         });
     });
 });
@@ -385,7 +426,10 @@ function cleanupExpiredBookings() {
     const now = new Date();
     const todayStr = now.toISOString().split('T')[0]; // YYYY-MM-DD
 
-    const sql = "SELECT id, date, message, status FROM queue_contact WHERE status IS NULL OR status = 'จองแล้ว'";
+    // Some installations don't have a `status` column in `queue_contact`.
+    // Select only fields that exist to avoid SQL errors; treat missing status
+    // as equivalent to "active" bookings.
+    const sql = "SELECT id, date, message FROM queue_contact";
     db.query(sql, (err, rows) => {
         if (err) {
             console.error('[ERROR] cleanup query failed:', err);
@@ -434,13 +478,16 @@ function cleanupExpiredBookings() {
                 console.log(`[CLEANUP] Deleted ${toCancel.length} expired booking(s)`);
             });
         } else {
-            const updateSql = `UPDATE queue_contact SET status = 'ยกเลิกโดยระบบ' WHERE id IN (${placeholders})`;
-            db.query(updateSql, toCancel, (uErr, uRes) => {
+            // Some DB schemas may not have a `status` column — in that case
+            // fall back to deleting expired rows instead of updating a
+            // non-existent column.
+            const deleteSqlFallback = `DELETE FROM queue_contact WHERE id IN (${placeholders})`;
+            db.query(deleteSqlFallback, toCancel, (uErr, uRes) => {
                 if (uErr) {
-                    console.error('[ERROR] cleanup update failed:', uErr);
+                    console.error('[ERROR] cleanup delete (fallback) failed:', uErr);
                     return;
                 }
-                console.log(`[CLEANUP] Marked ${toCancel.length} booking(s) as ยกเลิกโดยระบบ`);
+                console.log(`[CLEANUP] Deleted ${toCancel.length} expired booking(s) (fallback)`);
             });
         }
     });

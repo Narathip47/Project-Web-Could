@@ -28,7 +28,8 @@
 
     <nav class ="navbar">
         <div class="logo">LibraryBooking</div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span id="studentNameDisplay" style="color: #333; font-weight: 600; margin-right: 8px;"></span>
             <a href="http://localhost:3000/home.html" class="btn-nav" style="background: #6c757d;">กลับหน้าหลัก</a>
             <button id="btnLogout" class="btn-nav" style="background: #ef4444; border: none; cursor: pointer; color: white;">ออกจากระบบ</button>
         </div>
@@ -74,6 +75,12 @@
             // ถ้าล็อกอินแล้ว เอาชื่อและรหัสนักศึกษามาใส่ในช่องให้เลย
             document.getElementById('b_name').value = loggedInUser.name;
             document.getElementById('b_student_id').value = loggedInUser.student_id;
+            
+            // แสดงชื่อ student ที่มุมขวาของ navbar
+            const nameDisplay = document.getElementById('studentNameDisplay');
+            if (nameDisplay) {
+                nameDisplay.textContent = loggedInUser.name;
+            }
             
             // ล็อกช่องไว้ ไม่ให้คนพิมพ์แก้ชื่อตัวเอง
             document.getElementById('b_name').disabled = true;

@@ -20,7 +20,46 @@
         <a href="/admin.html">Logout</a>
     </div>
     <div class="main">
-        <h2>List of administrators</h2>
+        <div class="admin-header">
+            <h2>List of administrators</h2>
+
+            <div class="header-controls">
+                <div class="search-box">
+                    <input id="searchAdmin" placeholder="Search Admin Name..." oninput="filterAdmins()" />
+                    <button onclick="filterAdmins()">🔍</button>
+                </div>
+                <button class="create-btn" onclick="toggleCreate()">Create Admin +</button>
+            </div>
+        </div>
+
+        <!-- Modal for creating admin -->
+        <div id="createModal" class="modal-overlay" style="display:none;">
+            <div class="modal">
+                <button class="modal-close" onclick="toggleCreate()">×</button>
+                <h3 style="margin-bottom:8px">Create Administrator</h3>
+                <p style="color:#666; margin-top:0; margin-bottom:12px; font-size:14px">Fill in the details to create a new admin account.</p>
+
+                <form id="addAdminForm" onsubmit="addAdmin(event)" class="modal-form">
+                    <label class="field">
+                        <span>Username</span>
+                        <input type="text" id="newUsername" placeholder="Enter username" required />
+                    </label>
+                    <label class="field">
+                        <span>Email</span>
+                        <input type="email" id="newEmail" placeholder="admin@example.com" required />
+                    </label>
+                    <label class="field">
+                        <span>Password</span>
+                        <input type="password" id="newPassword" placeholder="Password" required />
+                    </label>
+
+                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:12px;">
+                        <button type="button" class="btn-cancel" onclick="toggleCreate()">Cancel</button>
+                        <button type="submit" class="create-btn">Create</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
         <table class="admin-list" id="adminTable">
             <tr>
@@ -61,14 +100,14 @@ async function loadAdmins() {
         table.innerHTML += `
             <tr>
                 <td>${index + 1}</td>
-                <td>${admin.username}</td>
-                <td>${admin.email}</td>
-                <td>${admin.password}</td>
+                <td style="text-align:left; padding-left:18px">${admin.username}</td>
+                <td style="text-align:left">${admin.email}</td>
+                <td><button class="btn-pass">🔒</button></td>
                 <td>
-                    <button onclick="editAdmin(${admin.id}, '${admin.username}', '${admin.email}', '${admin.password}')">✏️</button>
+                    <button class="btn-edit" onclick="editAdmin(${admin.id}, '${admin.username}', '${admin.email}', '${admin.password}')">✏️</button>
                 </td>
                 <td>
-                    <button onclick="deleteAdmin(${admin.id})">🗑️</button>
+                    <button class="btn-delete" onclick="deleteAdmin(${admin.id})">🗑️</button>
                 </td>
             </tr>
         `;
@@ -124,7 +163,52 @@ async function editAdmin(id, username, email, password) {
     }
 }
 
+
+async function addAdmin(e) {
+    e.preventDefault();
+
+    const username = document.getElementById('newUsername').value.trim();
+    const email = document.getElementById('newEmail').value.trim();
+    const password = document.getElementById('newPassword').value.trim();
+
+    if (!username || !email || !password) {
+        alert('กรุณากรอกข้อมูลให้ครบ');
+        return;
+    }
+
+    const res = await fetch('/api/addAdmin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+        alert('เพิ่มผู้ดูแลสำเร็จ');
+        document.getElementById('addAdminForm').reset();
+        loadAdmins();
+    } else {
+        alert('เกิดข้อผิดพลาด: ' + (data.message || 'ไม่สามารถเพิ่มได้'));
+    }
+}
+
 loadAdmins();
+
+function toggleCreate(){
+    const modal = document.getElementById('createModal');
+    modal.style.display = modal.style.display === 'none' ? 'flex' : 'none';
+}
+
+function filterAdmins(){
+    const q = document.getElementById('searchAdmin').value.toLowerCase();
+    const rows = Array.from(document.querySelectorAll('#adminTable tr'));
+    // skip header row (index 0)
+    rows.slice(1).forEach(r => {
+        const name = (r.children[1]?.innerText || '').toLowerCase();
+        r.style.display = name.includes(q) ? '' : 'none';
+    });
+}
 </script>
 </body>
 </html>

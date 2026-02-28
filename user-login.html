@@ -21,6 +21,20 @@
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        // Check if admin is already logged in → redirect to admin dashboard
+        (function() {
+            try {
+                const rawUser = localStorage.getItem('adminUser');
+                if (rawUser) {
+                    const user = JSON.parse(rawUser);
+                    if (user && user.username) {
+                        // Admin already logged in, redirect to admin dashboard
+                        window.location.href = '/AdminSystem.html';
+                    }
+                }
+            } catch (e) { /* ignore */ }
+        })();
+
         document.getElementById('btnLogin').addEventListener('click', async () => {
             const student_id = document.getElementById('log_student_id').value;
             const password = document.getElementById('log_password').value;

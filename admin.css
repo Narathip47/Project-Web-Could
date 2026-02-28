@@ -116,6 +116,128 @@ body {
     color:black;
 }
 
+/* Header and controls for manage-admin */
+.admin-header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+.header-controls{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.create-btn{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+}
+.search-box{
+    display:flex;
+    align-items:center;
+    gap:6px;
+}
+.search-box input{
+    padding:8px 10px;
+    border-radius:6px;
+    border:1px solid #ddd;
+}
+.search-box button{
+    background:#0d6efd;
+    color:white;
+    border:none;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+/* Modal styles for create admin */
+.modal-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.45);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    z-index:1000;
+    padding:20px;
+}
+.modal{
+    background:white;
+    border-radius:10px;
+    padding:20px 20px 16px 20px;
+    width:420px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    position:relative;
+}
+.modal-close{
+    position:absolute;
+    right:10px;
+    top:8px;
+    background:transparent;
+    border:none;
+    font-size:22px;
+    cursor:pointer;
+}
+.modal-form .field{
+    display:block;
+    margin-bottom:10px;
+}
+.modal-form .field span{
+    display:block;
+    font-size:13px;
+    color:#444;
+    margin-bottom:6px;
+}
+.modal-form input{
+    width:100%;
+    padding:10px 12px;
+    border-radius:8px;
+    border:1px solid #e3e6ea;
+    outline:none;
+}
+.modal-form input:focus{
+    border-color:#7aa7ff;
+    box-shadow:0 4px 12px rgba(13,110,253,0.12);
+}
+.btn-cancel{
+    background:#f0f0f0;
+    color:#333;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* Action buttons in table */
+.admin-list button{
+    border:none;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+}
+.btn-edit{
+    background:#f0ad4e; /* yellow */
+    color:#222;
+}
+.btn-delete{
+    background:#dc3545; /* red */
+    color:white;
+}
+.btn-pass{
+    background:#6c757d; /* gray */
+    color:white;
+}
+
+/* Narrow table cells and alignments */
+.admin-list td:nth-child(1){ width:60px; }
+.admin-list td:nth-child(4){ width:90px; }
+.admin-list td:nth-child(5), .admin-list td:nth-child(6){ width:90px; }
+
 
 /* -------------------------------==================================== ----------------------------------*/
 /*                                            Dashboard.html                                            */
